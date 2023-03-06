@@ -1,0 +1,143 @@
+clock.tick(fps)
+
+  #draw background
+  draw_bg()
+
+  if main_menu == True:
+      draw_mainmenu_bg()
+      screen.blit(name_transform, (10, 0))
+      if exit_button.draw():
+          Run = False
+      if start_button.draw():
+          main_menu = False
+          start = True
+
+  elif start == True:
+      draw_start_bg()
+      screen.blit(selection_transform, (250, 0))
+      # display all the buttons for the fighter
+      if warrior_button.draw():
+          f1 = True
+          f3 = False
+          f5 = False
+
+      if wizard_button.draw():
+          f2 = True
+          f4 = False
+          f6 = False
+
+      if oden_button.draw():
+          f3 = True
+          f1 = False
+          f5 = False
+
+      if black_button.draw():
+          f4 = True
+          f2 = False
+          f6 = False
+
+      if armour_button.draw():
+          f5 = True
+          f1 = False
+          f3 = False
+
+      if fire_button.draw():
+          f6 = True
+          f2 = False
+          f4 = False
+      # puts an arrow when the fighter  is selected
+      if f1 == True:
+          screen.blit(arrow_transform, (250, 450))
+      if f2 == True:
+          screen.blit(arrow_transform, (900, 450))
+      if f3 == True:
+          screen.blit(arrow_transform, (50, 450))
+      if f4 == True:
+          screen.blit(arrow_transform, (650, 450))
+      if f5 == True:
+          screen.blit(arrow_transform, (150, 450))
+      if f6 == True:
+          screen.blit(arrow_transform, (750, 450))
+
+  if fight_button.draw():
+    start = False
+  # return back to the main menu
+    if exit_button1.draw():
+          main_menu = True
+          if main_menu == True:
+              draw_mainmenu_bg()
+              if exit_button1.draw():
+                  Run = False
+                  if start_button.draw():
+                      main_menu = True
+  else:
+      # show player health
+      fighter_healthbar()
+   #show player score
+      draw_text("P1:  "+ str(score[0]), score_font, RED, 20, 60 )
+      draw_text("P2:  "+ str(score[1]), score_font, RED, 580, 60 )
+  # update countdown
+  if start_count <= 0:
+      # move fighters
+      fighter_move()
+  else:
+      # display count timer
+      draw_text(str(start_count), countdown_font, RED, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3)
+      # update count timer
+      if (pygame.time.get_ticks() - end_count_update) >= 1000:
+          start_count -= 1
+          end_count_update = pygame.time.get_ticks()
+
+  # update fighters
+  fighter_update()
+  #draw fighters
+  fighter_draw()
+
+  # check for player defeat
+  if round_over == False:
+      if fighter_1.alive == False:
+          score[1] += 1
+          round_over = True
+          roundover_time = pygame.time.get_ticks()
+      elif fighter_2.alive == False:
+          score[0] += 1
+          round_over = True
+          roundover_time = pygame.time.get_ticks()
+      elif fighter_3.alive == False:
+          score[1] += 1
+          round_over = True
+          roundover_time = pygame.time.get_ticks()
+      elif fighter_4.alive == False:
+          score[0] += 1
+          round_over = True
+          roundover_time = pygame.time.get_ticks()
+      elif fighter_5.alive == False:
+          score[1] += 1
+          round_over = True
+          roundover_time = pygame.time.get_ticks()
+      elif fighter_6.alive == False:
+          score[0] += 1
+          round_over = True
+          roundover_time = pygame.time.get_ticks()
+  else:
+      # display victory image
+      screen.blit(victory, (300, 150))
+      if pygame.time.get_ticks() - roundover_time > roundover_cooldown:
+          round_over = False
+          start_count = 3
+          fighter_1 = Fighter(1, 200, 310, False, warriordata, warriorsprite, warriorsteps, sword_fx)
+          fighter_2 = Fighter(2, 700, 310, True, wizarddata, wizardsprite, wizardsteps, magic_fx)
+          fighter_3 = Fighter(1, 200, 310, False, odendata, odensprite, odensteps, sword_fx)
+          fighter_4 = Fighter(2, 700, 310, True, blackdata, blacksprite, blacksteps, sword_fx)
+          fighter_5 = Fighter(1, 200, 310, False, tribaldata, tribalsprite, tribalsteps, sword_fx)
+          fighter_6 = Fighter(2, 700, 310, True, firedata, firesprite, firesteps, sword_fx)
+
+  # event handler
+  for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            Run = False
+
+# update display
+  pygame.display.update()
+#exit pygame
+pygame.quit()
